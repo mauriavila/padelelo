@@ -1,9 +1,10 @@
+import { Trophy } from 'lucide-react'
 import ComingSoon from '@/components/ComingSoon'
 
 export default function TorneosPage() {
   return (
     <ComingSoon
-      icon="🏆"
+      icon={<Trophy size={40} className="text-brand-red" />}
       title="Torneos por División"
       description="Competí contra jugadores de tu nivel en torneos organizados por PADELELO."
       features={[

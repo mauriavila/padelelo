@@ -1,9 +1,10 @@
+import { BarChart2 } from 'lucide-react'
 import ComingSoon from '@/components/ComingSoon'
 
 export default function RankingPage() {
   return (
     <ComingSoon
-      icon="📊"
+      icon={<BarChart2 size={40} className="text-brand-red" />}
       title="Ranking ELO Nacional"
       description="Un ranking transparente que refleja tu nivel real contra toda la comunidad."
       features={[
