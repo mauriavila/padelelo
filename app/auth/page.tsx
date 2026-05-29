@@ -10,32 +10,44 @@ export default function AuthPage() {
   async function signInWithGoogle() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
   }
 
   return (
-    <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center px-4">
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-black tracking-widest text-white">
-          PADEL<span className="text-brand-red">ELO</span>
-        </h1>
-        <p className="text-brand-muted mt-2 text-sm">Tu ranking. Tu nivel.</p>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+      {/* Glow background */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none"
+        style={{ background: 'radial-gradient(circle, #e94560, transparent)' }} />
+
+      {/* Logo */}
+      <div className="mb-10 text-center relative">
+        <div className="text-5xl font-black tracking-widest mb-2">
+          <span className="text-white">PADEL</span>
+          <span className="gradient-text">ELO</span>
+        </div>
+        <p className="text-white/40 text-sm tracking-wide">Tu ranking. Tu nivel.</p>
       </div>
 
-      <div className="w-full max-w-sm bg-brand-card rounded-2xl p-8 border border-brand-navy">
-        <h2 className="text-white text-xl font-bold mb-2">Entrar al juego</h2>
-        <p className="text-brand-muted text-sm mb-6">
+      {/* Card */}
+      <div className="w-full max-w-sm rounded-3xl p-8 relative"
+        style={{
+          background: 'rgba(26,26,46,0.6)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+        }}>
+        <h2 className="text-white text-xl font-bold mb-1.5">Entrar al juego</h2>
+        <p className="text-white/40 text-sm mb-7 leading-relaxed">
           Encontrá partidas, subí de división y demostrá tu nivel.
         </p>
 
         <button
           onClick={signInWithGoogle}
-          className="w-full flex items-center justify-center gap-3 bg-white text-gray-900 font-semibold py-3 rounded-xl hover:bg-gray-100 transition-colors"
+          className="w-full flex items-center justify-center gap-3 bg-white text-gray-900 font-semibold py-3.5 rounded-2xl hover:bg-gray-50 transition-colors"
+          style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24">
+          <svg width="18" height="18" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>

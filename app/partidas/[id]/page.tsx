@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
+import { MapPin, Clock, Share2 } from 'lucide-react'
 import { Match } from '@/lib/types'
 import DivisionBadge from '@/components/DivisionBadge'
 import JoinButton from '@/components/JoinButton'
@@ -13,8 +14,7 @@ interface Props {
 
 function formatFullDate(iso: string) {
   return new Date(iso).toLocaleDateString('es-AR', {
-    weekday: 'long', day: 'numeric', month: 'long',
-    hour: '2-digit', minute: '2-digit',
+    weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
   })
 }
 
@@ -34,16 +34,14 @@ export default async function MatchDetailPage({ params, searchParams }: Props) {
 
   if (!match) return notFound()
 
-  if (!match.is_public && match.creator_id !== user.id) {
-    if (!code || code !== match.invite_code) {
-      return (
-        <div className="max-w-lg mx-auto px-4 pt-16 text-center">
-          <p className="text-4xl mb-3">🔒</p>
-          <p className="text-white font-bold text-lg">Partida privada</p>
-          <p className="text-brand-muted text-sm mt-2">Necesitás el link de invitación para unirte.</p>
-        </div>
-      )
-    }
+  if (!match.is_public && match.creator_id !== user.id && (!code || code !== match.invite_code)) {
+    return (
+      <div className="max-w-lg mx-auto px-4 pt-20 text-center">
+        <div className="text-5xl mb-4">🔒</div>
+        <p className="text-white font-bold text-xl mb-2">Partida privada</p>
+        <p className="text-white/40 text-sm">Necesitás el link de invitación para unirte.</p>
+      </div>
+    )
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? ''
@@ -53,17 +51,21 @@ export default async function MatchDetailPage({ params, searchParams }: Props) {
 
   return (
     <div className="max-w-lg mx-auto px-4 pt-6">
-      <div className="mb-6">
-        <h1 className="text-white font-bold text-xl mb-1">{match.location}</h1>
-        <p className="text-brand-muted text-sm">{formatFullDate(match.scheduled_at)}</p>
-        <div className="flex items-center gap-2 mt-3">
-          {match.division ? (
-            <DivisionBadge division={match.division} />
-          ) : (
-            <span className="text-brand-muted text-sm">Cualquier nivel</span>
-          )}
-          <span className={`text-xs px-2 py-1 rounded-full font-semibold
-            ${match.is_public ? 'bg-green-900/30 text-green-400' : 'bg-gray-800 text-gray-400'}`}>
+      <div className="card-elevated bg-brand-card border border-white/8 rounded-3xl p-5 mb-5">
+        <div className="flex items-start gap-2 mb-1">
+          <MapPin size={15} className="text-brand-muted mt-0.5 shrink-0" />
+          <h1 className="text-white font-black text-lg leading-tight">{match.location}</h1>
+        </div>
+        <div className="flex items-center gap-1.5 ml-5 mb-4">
+          <Clock size={13} className="text-white/30" />
+          <p className="text-white/40 text-sm capitalize">{formatFullDate(match.scheduled_at)}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {match.division
+            ? <DivisionBadge division={match.division} />
+            : <span className="text-white/40 text-sm">Cualquier nivel</span>}
+          <span className={`text-xs px-2.5 py-1 rounded-full font-medium
+            ${match.is_public ? 'text-green-400 bg-green-400/10' : 'text-white/30 bg-white/5'}`}>
             {match.is_public ? '🌐 Pública' : '🔒 Privada'}
           </span>
         </div>
@@ -71,16 +73,19 @@ export default async function MatchDetailPage({ params, searchParams }: Props) {
 
       <JoinButton match={match as Match} currentUserId={user.id} />
 
-      <div className="mt-6 p-4 bg-brand-card rounded-xl border border-brand-navy">
-        <p className="text-brand-muted text-xs uppercase tracking-wide mb-2">Compartir por WhatsApp</p>
-        <a
-          href={`https://wa.me/?text=${encodeURIComponent(`¡Sumate a mi partida de pádel! ${shareUrl}`)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-green-400 text-sm font-semibold hover:text-green-300"
-        >
-          <span>💬</span>
-          <span>Invitar por WhatsApp</span>
+      <div className="mt-5 card-elevated bg-brand-card border border-white/8 rounded-2xl p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Share2 size={15} className="text-white/40" />
+          <p className="text-white/40 text-xs uppercase tracking-widest">Compartir</p>
+        </div>
+        <a href={`https://wa.me/?text=${encodeURIComponent(`¡Sumate a mi partida de pádel! ${shareUrl}`)}`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3 hover:bg-green-500/15 transition-colors">
+          <span className="text-xl">💬</span>
+          <div>
+            <p className="text-green-400 text-sm font-semibold">Invitar por WhatsApp</p>
+            <p className="text-white/30 text-xs">Compartí el link con tus amigos</p>
+          </div>
         </a>
       </div>
     </div>
