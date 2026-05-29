@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import BottomNav from '@/components/BottomNav'
@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   title: 'PADELELO',
   description: 'Tu ranking. Tu nivel. Encontrá partidas de pádel.',
   manifest: '/manifest.json',
+}
+
+export const viewport: Viewport = {
+  themeColor: '#0f0f0f',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
