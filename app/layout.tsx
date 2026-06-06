@@ -1,30 +1,25 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
-import BottomNav from '@/components/BottomNav'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'PADELELO',
-  description: 'Tu ranking. Tu nivel. Encontrá partidas de pádel.',
+  title: 'Gastos',
+  description: 'Tracker de gastos personal',
   manifest: '/manifest.json',
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'Gastos' },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0f0f0f',
+  themeColor: '#0a0a0f',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body className={`${inter.className} bg-brand-dark text-white`}>
-        <main>{children}</main>
-        <BottomNav />
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
