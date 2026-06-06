@@ -147,12 +147,9 @@ CREATE POLICY installments_own ON expenses.installments
     expense_id IN (SELECT id FROM expenses.expenses WHERE user_id = auth.uid())
   );
 
--- expense_participants: own participations + expenses I own
+-- expense_participants: own participations (no cross-reference to expenses to avoid RLS infinite recursion)
 CREATE POLICY participants_own ON expenses.expense_participants
-  FOR ALL USING (
-    user_id = auth.uid()
-    OR expense_id IN (SELECT id FROM expenses.expenses WHERE user_id = auth.uid())
-  );
+  FOR ALL USING (user_id = auth.uid());
 
 -- income: own rows only
 CREATE POLICY income_own ON expenses.income

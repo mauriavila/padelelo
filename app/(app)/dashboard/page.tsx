@@ -18,20 +18,11 @@ export default async function DashboardPage({
   const params = await searchParams
   const month = params.month ?? getCurrentYearMonth()
 
-  let expenses: Awaited<ReturnType<typeof getExpensesForMonth>> = []
-  let installments: Awaited<ReturnType<typeof getInstallmentsForMonth>> = []
-  let income: Awaited<ReturnType<typeof getIncomeForMonth>> = []
-
-  try {
-    ;[expenses, installments, income] = await Promise.all([
-      getExpensesForMonth(month),
-      getInstallmentsForMonth(month),
-      getIncomeForMonth(month),
-    ])
-  } catch (e) {
-    console.error('[Dashboard] query error:', e)
-    throw e
-  }
+  const [expenses, installments, income] = await Promise.all([
+    getExpensesForMonth(month),
+    getInstallmentsForMonth(month),
+    getIncomeForMonth(month),
+  ])
 
   const totalExpenses = expenses.reduce((sum, e) => sum + e.total_amount, 0)
   const totalInstallments = installments.reduce((sum, i) => sum + i.amount, 0)
