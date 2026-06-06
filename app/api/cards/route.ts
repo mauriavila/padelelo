@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase
     .from('cards')
-    .insert({ user_id: user.id, name, bank, color, closing_day })
+    .insert({ user_id: user.id, name, bank, color, closing_day: closing_day ?? 28 })
     .select()
     .single()
 

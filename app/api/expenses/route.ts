@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
-import { calcBillingMonth, generateInstallments } from '@/lib/billing'
+import { generateInstallments } from '@/lib/billing'
 
 export async function POST(request: Request) {
   const supabase = await createClient()
@@ -19,15 +19,10 @@ export async function POST(request: Request) {
     is_shared,
     group_id,
     participants,
+    billing_month: billing_month_input,
   } = body
 
-  let billing_month: string | null = null
-  if (payment_method === 'credit_card' && card_id) {
-    const { data: card } = await supabase.from('cards').select('closing_day').eq('id', card_id).single()
-    if (card) {
-      billing_month = calcBillingMonth(expense_date, card.closing_day)
-    }
-  }
+  const billing_month: string | null = payment_method === 'credit_card' ? (billing_month_input ?? null) : null
 
   const { data: expense, error: expErr } = await supabase
     .from('expenses')

@@ -15,7 +15,6 @@ export default function CardForm({ open, onClose }: CardFormProps) {
   const [name, setName] = useState('')
   const [bank, setBank] = useState('')
   const [color, setColor] = useState(COLORS[0])
-  const [closingDay, setClosingDay] = useState(20)
   const [saving, setSaving] = useState(false)
 
   async function save() {
@@ -25,11 +24,11 @@ export default function CardForm({ open, onClose }: CardFormProps) {
       await fetch('/api/cards', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), bank: bank.trim() || null, color, closing_day: closingDay }),
+        body: JSON.stringify({ name: name.trim(), bank: bank.trim() || null, color }),
       })
       router.refresh()
       onClose()
-      setName(''); setBank(''); setColor(COLORS[0]); setClosingDay(20)
+      setName(''); setBank(''); setColor(COLORS[0])
     } finally {
       setSaving(false)
     }
@@ -76,21 +75,6 @@ export default function CardForm({ open, onClose }: CardFormProps) {
             ))}
           </div>
         </div>
-
-        <label className="flex flex-col gap-1">
-          <span className="text-sm text-[var(--color-muted)]">Día de cierre</span>
-          <input
-            type="number"
-            min={1}
-            max={28}
-            className="bg-[var(--color-surface-raised)] rounded-xl px-4 py-3 text-base outline-none w-24"
-            value={closingDay}
-            onChange={e => setClosingDay(Math.max(1, Math.min(28, parseInt(e.target.value) || 1)))}
-          />
-          <span className="text-xs text-[var(--color-muted)]">
-            Gastos después del día {closingDay} van al mes siguiente
-          </span>
-        </label>
 
         <button
           onClick={save}

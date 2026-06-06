@@ -1,5 +1,6 @@
 import type { Expense, Card } from '@/lib/types'
 import { formatARS } from '@/lib/currency'
+import { Pencil } from 'lucide-react'
 
 const CATEGORY_ICONS: Record<string, string> = {
   food: '🍽️', transport: '🚗', entertainment: '🎬',
@@ -8,9 +9,10 @@ const CATEGORY_ICONS: Record<string, string> = {
 
 interface ExpenseRowProps {
   expense: Expense & { card?: Card | null }
+  onEdit?: (expense: Expense) => void
 }
 
-export default function ExpenseRow({ expense }: ExpenseRowProps) {
+export default function ExpenseRow({ expense, onEdit }: ExpenseRowProps) {
   return (
     <div className="flex items-center gap-3 py-3 border-b border-[var(--color-border)] last:border-0">
       <div className="w-10 h-10 rounded-xl bg-[var(--color-surface-raised)] flex items-center justify-center text-lg flex-shrink-0">
@@ -32,6 +34,15 @@ export default function ExpenseRow({ expense }: ExpenseRowProps) {
       <span className="font-semibold text-[var(--color-expense)]">
         -{formatARS(expense.total_amount)}
       </span>
+      {onEdit && (
+        <button
+          onClick={() => onEdit(expense)}
+          className="p-2 text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors"
+          aria-label="Editar gasto"
+        >
+          <Pencil size={16} />
+        </button>
+      )}
     </div>
   )
 }

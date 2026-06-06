@@ -18,6 +18,7 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
   const router = useRouter()
   const [month, setMonth] = useState(initialMonth)
   const [formOpen, setFormOpen] = useState(false)
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
 
   function handleMonthChange(m: string) {
     setMonth(m)
@@ -38,7 +39,11 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
       ) : (
         <div>
           {initialExpenses.map(e => (
-            <ExpenseRow key={e.id} expense={e as Expense & { card: Card | null }} />
+            <ExpenseRow
+              key={e.id}
+              expense={e as Expense & { card: Card | null }}
+              onEdit={setEditingExpense}
+            />
           ))}
         </div>
       )}
@@ -56,6 +61,15 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
         cards={cards}
         groupMembers={[]}
         currentUserId={currentUserId}
+      />
+
+      <ExpenseForm
+        open={editingExpense !== null}
+        onClose={() => setEditingExpense(null)}
+        cards={cards}
+        groupMembers={[]}
+        currentUserId={currentUserId}
+        editingExpense={editingExpense}
       />
     </div>
   )

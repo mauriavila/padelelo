@@ -1,10 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomSheet from '@/components/ui/BottomSheet'
 import AmountInput from '@/components/ui/AmountInput'
-import type { Card } from '@/lib/types'
-import { calcBillingMonth } from '@/lib/billing'
+import type { Card, Expense } from '@/lib/types'
 import { formatARS } from '@/lib/currency'
 
 const CATEGORIES = [
@@ -24,9 +23,33 @@ interface ExpenseFormProps {
   groupMembers: Array<{ user_id: string; display_name: string }>
   currentUserId: string
   groupId?: number | null
+  editingExpense?: Expense | null
 }
 
-export default function ExpenseForm({ open, onClose, cards, groupMembers, currentUserId, groupId }: ExpenseFormProps) {
+function getInitialBillingMonth() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
+}
+
+function fmtBillingMonth(ym: string) {
+  const [y, m] = ym.split('-')
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+  return `${months[parseInt(m) - 1]} ${y}`
+}
+
+function prevMonth(ym: string) {
+  const [y, m] = ym.split('-').map(Number)
+  const d = new Date(y, m - 2, 1)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
+}
+
+function nextMonth(ym: string) {
+  const [y, m] = ym.split('-').map(Number)
+  const d = new Date(y, m, 1)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
+}
+
+export default function ExpenseForm({ open, onClose, cards, groupMembers, currentUserId, groupId, editingExpense }: ExpenseFormProps) {
   const router = useRouter()
   const today = new Date().toISOString().split('T')[0]
 
@@ -40,13 +63,29 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
   const [isShared, setIsShared] = useState(false)
   const [splitType, setSplitType] = useState<'equal' | 'fixed'>('equal')
   const [fixedAmounts, setFixedAmounts] = useState<Record<string, number>>({})
+  const [billingMonth, setBillingMonth] = useState(getInitialBillingMonth)
   const [saving, setSaving] = useState(false)
 
-  const selectedCard = cards.find(c => c.id === cardId)
-
-  const billingMonthPreview = method === 'credit_card' && selectedCard && date
-    ? calcBillingMonth(date, selectedCard.closing_day)
-    : null
+  // Pre-fill form when editing
+  useEffect(() => {
+    if (editingExpense) {
+      setAmount(editingExpense.total_amount)
+      setDescription(editingExpense.description ?? '')
+      setCategory(editingExpense.category)
+      setMethod(editingExpense.payment_method)
+      setCardId(editingExpense.card_id)
+      setInstallments(editingExpense.installments_count ?? 1)
+      setDate(editingExpense.expense_date)
+      setIsShared(editingExpense.is_shared)
+      if (editingExpense.billing_month) {
+        // billing_month from DB is stored as YYYY-MM-DD, normalize to YYYY-MM-01
+        const parts = editingExpense.billing_month.split('-')
+        setBillingMonth(`${parts[0]}-${parts[1]}-01`)
+      } else {
+        setBillingMonth(getInitialBillingMonth())
+      }
+    }
+  }, [editingExpense])
 
   const installmentAmount = installments > 1 ? Math.floor(amount / installments) : amount
 
@@ -65,40 +104,60 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
     ]
   }
 
+  function resetForm() {
+    setAmount(0); setDescription(''); setCategory('other'); setMethod('cash')
+    setCardId(null); setInstallments(1); setDate(today)
+    setIsShared(false); setSplitType('equal'); setFixedAmounts({})
+    setBillingMonth(getInitialBillingMonth())
+  }
+
   async function save() {
     if (amount <= 0) return
     setSaving(true)
     try {
-      await fetch('/api/expenses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          description: description.trim() || null,
-          total_amount: amount,
-          category,
-          payment_method: method,
-          card_id: cardId,
-          expense_date: date,
-          installments_count: installments,
-          is_shared: isShared,
-          group_id: isShared && groupMembers.length > 0 ? (groupId ?? null) : null,
-          participants: getParticipants(),
-        }),
-      })
+      const payload = {
+        description: description.trim() || null,
+        total_amount: amount,
+        category,
+        payment_method: method,
+        card_id: cardId,
+        expense_date: date,
+        installments_count: installments,
+        is_shared: isShared,
+        group_id: isShared && groupMembers.length > 0 ? (groupId ?? null) : null,
+        participants: getParticipants(),
+        billing_month: method === 'credit_card' ? billingMonth : null,
+      }
+
+      if (editingExpense) {
+        await fetch(`/api/expenses/${editingExpense.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      } else {
+        await fetch('/api/expenses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      }
+
       router.refresh()
       onClose()
-      setAmount(0); setDescription(''); setCategory('other'); setMethod('cash')
-      setCardId(null); setInstallments(1); setDate(today)
-      setIsShared(false); setSplitType('equal'); setFixedAmounts({})
+      if (!editingExpense) resetForm()
     } finally {
       setSaving(false)
     }
   }
 
+  const title = editingExpense ? 'Editar gasto' : 'Nuevo gasto'
+  const saveLabel = editingExpense ? 'Guardar cambios' : 'Guardar gasto'
+
   return (
-    <BottomSheet open={open} onClose={onClose} title="Nuevo gasto">
+    <BottomSheet open={open} onClose={onClose} title={title}>
       <div className="flex flex-col gap-5">
-        <AmountInput value={amount} onChange={setAmount} autoFocus />
+        <AmountInput value={amount} onChange={setAmount} autoFocus={!editingExpense} />
 
         <input
           className="bg-[var(--color-surface-raised)] rounded-xl px-4 py-3 text-base outline-none"
@@ -191,19 +250,24 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
                 </button>
               ))}
             </div>
-            {amount > 0 && billingMonthPreview && (
-              <div className="mt-2 p-3 bg-[var(--color-surface-raised)] rounded-xl text-sm">
-                {installments > 1 ? (
-                  <span>
-                    {installments} cuotas de {formatARS(installmentAmount)} · 1ra cuota en{' '}
-                    <strong>{billingMonthPreview.slice(0, 7)}</strong>
-                  </span>
-                ) : (
-                  <span>
-                    Se cobra en <strong>{billingMonthPreview.slice(0, 7)}</strong>
-                  </span>
-                )}
-              </div>
+            {amount > 0 && installments > 1 && (
+              <p className="text-xs text-[var(--color-muted)] mt-2">
+                {installments} cuotas de {formatARS(installmentAmount)}
+              </p>
+            )}
+          </div>
+        )}
+
+        {method === 'credit_card' && (
+          <div>
+            <p className="text-xs text-[var(--color-muted)] mb-2">Mes de cobro</p>
+            <div className="flex items-center justify-between bg-[var(--color-surface-raised)] rounded-xl px-4 py-3">
+              <button type="button" onClick={() => setBillingMonth(prevMonth(billingMonth))} className="text-[var(--color-muted)] text-lg px-2">‹</button>
+              <span className="text-sm font-medium">{fmtBillingMonth(billingMonth)}</span>
+              <button type="button" onClick={() => setBillingMonth(nextMonth(billingMonth))} className="text-[var(--color-muted)] text-lg px-2">›</button>
+            </div>
+            {installments > 1 && (
+              <p className="text-xs text-[var(--color-muted)] mt-1 text-center">{installments} cuotas desde {fmtBillingMonth(billingMonth)}</p>
             )}
           </div>
         )}
@@ -212,6 +276,7 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
           <span className="text-sm text-[var(--color-muted)]">Fecha</span>
           <input
             type="date"
+            min="2020-01-01"
             className="bg-[var(--color-surface-raised)] rounded-xl px-4 py-3 text-base outline-none"
             value={date}
             onChange={e => setDate(e.target.value)}
@@ -285,7 +350,7 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
           disabled={amount <= 0 || saving}
           className="w-full bg-[var(--color-accent)] text-white font-semibold py-4 rounded-2xl disabled:opacity-50"
         >
-          {saving ? 'Guardando…' : 'Guardar gasto'}
+          {saving ? 'Guardando…' : saveLabel}
         </button>
       </div>
     </BottomSheet>
