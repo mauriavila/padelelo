@@ -1,21 +1,21 @@
 {
-  "name": "PADELELO",
-  "short_name": "PADELELO",
-  "description": "Tu ranking. Tu nivel. Encontrá partidas de pádel.",
-  "start_url": "/",
+  "name": "Gastos",
+  "short_name": "Gastos",
+  "description": "Seguimiento de gastos personales con cuotas",
+  "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#0f0f0f",
-  "theme_color": "#0f0f0f",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
