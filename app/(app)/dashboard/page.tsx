@@ -3,6 +3,8 @@ import { formatARS } from '@/lib/currency'
 import MonthSummary from '@/components/dashboard/MonthSummary'
 import DashboardClient from './DashboardClient'
 
+export const dynamic = 'force-dynamic'
+
 function getCurrentYearMonth() {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
@@ -16,11 +18,20 @@ export default async function DashboardPage({
   const params = await searchParams
   const month = params.month ?? getCurrentYearMonth()
 
-  const [expenses, installments, income] = await Promise.all([
-    getExpensesForMonth(month),
-    getInstallmentsForMonth(month),
-    getIncomeForMonth(month),
-  ])
+  let expenses: Awaited<ReturnType<typeof getExpensesForMonth>> = []
+  let installments: Awaited<ReturnType<typeof getInstallmentsForMonth>> = []
+  let income: Awaited<ReturnType<typeof getIncomeForMonth>> = []
+
+  try {
+    ;[expenses, installments, income] = await Promise.all([
+      getExpensesForMonth(month),
+      getInstallmentsForMonth(month),
+      getIncomeForMonth(month),
+    ])
+  } catch (e) {
+    console.error('[Dashboard] query error:', e)
+    throw e
+  }
 
   const totalExpenses = expenses.reduce((sum, e) => sum + e.total_amount, 0)
   const totalInstallments = installments.reduce((sum, i) => sum + i.amount, 0)
