@@ -25,7 +25,7 @@ export default async function IncomePage({
     <div className="max-w-[430px] mx-auto">
       <IncomePageClient month={month}>
         {/* Summary card */}
-        <section className="px-4 pb-4">
+        <section className="px-6 pb-4">
           <div className="rounded-3xl p-5 ring-1 ring-white/[0.05]" style={{ background: 'var(--color-surface)' }}>
             <p className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-muted)' }}>
               Total del mes
@@ -63,7 +63,7 @@ export default async function IncomePage({
             <p className="text-sm" style={{ color: 'var(--color-muted)' }}>Sin ingresos este mes</p>
           </div>
         ) : (
-          <section className="px-4">
+          <section className="px-6">
             <div className="overflow-hidden rounded-3xl ring-1 ring-white/[0.05]" style={{ background: 'var(--color-surface)' }}>
               {incomeList.map((inc, i) => (
                 <div

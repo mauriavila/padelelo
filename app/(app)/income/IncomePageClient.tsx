@@ -16,7 +16,7 @@ export default function IncomePageClient({ month, children }: Props) {
 
   return (
     <>
-      <div className="flex items-end justify-between px-4 pt-8 pb-4">
+      <div className="flex items-end justify-between px-6 pt-8 pb-4">
         <div className="space-y-1">
           <p className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-muted)' }}>
             Tus

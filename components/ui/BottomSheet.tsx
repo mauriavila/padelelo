@@ -26,7 +26,7 @@ export default function BottomSheet({ open, onClose, title, children }: BottomSh
         onClick={onClose}
       />
       <div
-        className="relative flex flex-col max-h-[92dvh] animate-sheet-up"
+        className="relative flex flex-col max-h-[75vh] animate-sheet-up"
         style={{
           background: 'var(--color-surface)',
           borderRadius: '24px 24px 0 0',
@@ -35,11 +35,11 @@ export default function BottomSheet({ open, onClose, title, children }: BottomSh
       >
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-          <div className="w-9 h-1 rounded-full" style={{ background: 'var(--color-border)' }} />
+          <div className="w-10 h-1 rounded-full bg-white/10" />
         </div>
         {/* Header */}
         <div
-          className="flex items-center justify-between px-5 py-3 flex-shrink-0"
+          className="flex items-center justify-between px-6 py-3 flex-shrink-0"
           style={{ borderBottom: '1px solid var(--color-border)' }}
         >
           <h2 className="text-lg font-display font-bold tracking-tight">{title}</h2>
@@ -53,7 +53,7 @@ export default function BottomSheet({ open, onClose, title, children }: BottomSh
         </div>
         {/* Scrollable content with safe-area bottom padding */}
         <div
-          className="overflow-y-auto px-5 py-4"
+          className="overflow-y-auto px-6 pt-2 pb-8"
           style={{ paddingBottom: 'calc(1.5rem + var(--sai-bottom))' }}
         >
           {children}

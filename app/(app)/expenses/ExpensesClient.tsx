@@ -27,7 +27,7 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
 
   return (
     <div className="max-w-[430px] mx-auto">
-      <div className="flex items-end justify-between px-4 pt-8 pb-4">
+      <div className="flex items-end justify-between px-6 pt-8 pb-4">
         <div className="space-y-1">
           <p className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-muted)' }}>
             Lista de
@@ -42,7 +42,7 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
           <p className="text-sm" style={{ color: 'var(--color-muted)' }}>Sin gastos en este mes</p>
         </div>
       ) : (
-        <div className="px-4">
+        <div className="px-6">
           <div className="overflow-hidden rounded-3xl mb-6 ring-1 ring-white/[0.05]" style={{ background: 'var(--color-surface)' }}>
             {initialExpenses.map((e, i) => (
               <div

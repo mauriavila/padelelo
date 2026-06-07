@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Users, Plus, UserPlus, X, ChevronRight } from 'lucide-react'
+import { Users, Plus, UserPlus, X, Crown } from 'lucide-react'
 
 interface Group {
   id: number
@@ -80,9 +80,9 @@ export default function GroupsClient({ groups: initialGroups, currentUserId }: P
   }
 
   return (
-    <div className="max-w-[430px] mx-auto px-4 pt-6">
+    <div className="max-w-[430px] mx-auto px-6 pt-6">
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-2xl font-bold">Grupos</h1>
+        <h1 className="text-2xl font-display font-bold tracking-tight">Grupos</h1>
         <button
           onClick={() => { setShowCreate(v => !v); setCreateError('') }}
           className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-2xl transition-all active:scale-95"
@@ -255,9 +255,7 @@ export default function GroupsClient({ groups: initialGroups, currentUserId }: P
                         {m.user_id === currentUserId ? 'Vos' : m.user_id.slice(0, 8) + '…'}
                       </span>
                       {m.role === 'owner' && (
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }}>
-                          Owner
-                        </span>
+                        <Crown size={12} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
                       )}
                     </div>
                   ))}

@@ -64,7 +64,7 @@ export default async function DashboardPage({
             {installments.map((inst, i) => (
               <div
                 key={inst.id}
-                className="flex items-center justify-between px-4 py-4"
+                className="flex items-center justify-between px-5 py-4"
                 style={{
                   background: 'var(--color-surface)',
                   borderTop: i > 0 ? '1px solid var(--color-border)' : 'none',

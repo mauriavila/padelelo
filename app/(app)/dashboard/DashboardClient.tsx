@@ -12,7 +12,7 @@ export default function DashboardClient({ month, userInitials, children }: Props
   const router = useRouter()
 
   return (
-    <div className="max-w-[430px] mx-auto px-4">
+    <div className="max-w-[430px] mx-auto px-6">
       <div className="flex items-end justify-between pt-8 pb-4">
         <div className="space-y-1">
           <p className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-muted)' }}>

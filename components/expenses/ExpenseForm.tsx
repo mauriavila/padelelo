@@ -202,10 +202,10 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
                   key={key}
                   type="button"
                   onClick={() => setCategory(key)}
-                  className="flex flex-col items-center gap-1.5 rounded-2xl py-3 px-2 ring-1 transition-colors"
+                  className="flex flex-col items-center gap-1.5 rounded-2xl py-3 px-2 ring-1 transition-all"
                   style={{
-                    background: active ? `${color}1a` : 'var(--color-surface-raised)',
-                    boxShadow: active ? `inset 0 0 0 1px ${color}33` : 'inset 0 0 0 1px rgba(255,255,255,0.04)',
+                    background: active ? `${color}20` : 'var(--color-surface-raised)',
+                    boxShadow: active ? `inset 0 0 0 1px ${color}80` : 'inset 0 0 0 1px rgba(255,255,255,0.04)',
                   }}
                 >
                   <Icon size={20} color={active ? color : 'var(--color-muted)'} strokeWidth={1.75} />
@@ -223,22 +223,26 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
 
         {/* Payment method */}
         <Field label="Método de pago">
-          <div className="flex gap-2">
-            {(['cash', 'transfer', 'credit_card'] as const).map(m => {
-              const active = method === m
-              const label = m === 'cash' ? 'Efectivo' : m === 'transfer' ? 'Transfer' : 'Tarjeta'
+          <div className="grid grid-cols-3 gap-2">
+            {([
+              { v: 'cash', l: 'Efectivo' },
+              { v: 'transfer', l: 'Transfer' },
+              { v: 'credit_card', l: 'Tarjeta' },
+            ] as const).map(opt => {
+              const active = method === opt.v
               return (
                 <button
-                  key={m}
+                  key={opt.v}
                   type="button"
-                  onClick={() => { setMethod(m); if (m !== 'credit_card') setCardId(null) }}
-                  className="flex-1 py-2.5 rounded-2xl text-sm font-medium transition-colors"
+                  onClick={() => { setMethod(opt.v); if (opt.v !== 'credit_card') setCardId(null) }}
+                  className="rounded-xl px-3 py-2.5 text-xs font-medium ring-1 transition-all"
                   style={{
-                    background: active ? 'var(--color-accent)' : 'var(--color-surface-raised)',
-                    color: active ? '#fff' : 'var(--color-muted)',
+                    background: active ? 'var(--color-accent-dim)' : 'var(--color-surface-raised)',
+                    color: active ? 'var(--color-accent-light)' : 'var(--color-muted)',
+                    boxShadow: active ? 'inset 0 0 0 1px var(--color-accent)' : 'inset 0 0 0 1px rgba(255,255,255,0.04)',
                   }}
                 >
-                  {label}
+                  {opt.l}
                 </button>
               )
             })}
@@ -253,23 +257,17 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
                 Primero agregá una tarjeta en la sección Tarjetas.
               </p>
             ) : (
-              <div className="rounded-2xl overflow-hidden ring-1 ring-white/[0.04]" style={{ background: 'var(--color-surface-raised)' }}>
-                {cards.map((card, i) => (
-                  <button
-                    key={card.id}
-                    type="button"
-                    onClick={() => setCardId(card.id)}
-                    className="w-full flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.02]"
-                    style={{ borderTop: i > 0 ? '1px solid var(--color-border)' : 'none' }}
-                  >
-                    <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: card.color }} />
-                    <span className="flex-1 text-sm text-left">{card.name}</span>
-                    {cardId === card.id && (
-                      <div className="w-2 h-2 rounded-full" style={{ background: 'var(--color-accent)' }} />
-                    )}
-                  </button>
+              <select
+                value={cardId ?? ''}
+                onChange={e => setCardId(e.target.value ? Number(e.target.value) : null)}
+                className="w-full appearance-none rounded-2xl px-4 py-3 text-sm outline-none ring-1 ring-white/[0.04] focus:ring-[var(--color-accent)]/60"
+                style={{ background: 'var(--color-surface-raised)', colorScheme: 'dark' }}
+              >
+                <option value="">Seleccionar tarjeta</option>
+                {cards.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
-              </div>
+              </select>
             )}
           </Field>
         )}
@@ -285,13 +283,14 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
                     key={n}
                     type="button"
                     onClick={() => setInstallments(n)}
-                    className="px-4 py-2 rounded-2xl text-sm font-medium transition-colors"
+                    className="rounded-full px-4 py-2 text-xs font-mono ring-1 transition-all"
                     style={{
-                      background: active ? 'var(--color-accent)' : 'var(--color-surface-raised)',
-                      color: active ? '#fff' : 'var(--color-muted)',
+                      background: active ? 'var(--color-accent-dim)' : 'var(--color-surface-raised)',
+                      color: active ? 'var(--color-accent-light)' : 'var(--color-muted)',
+                      boxShadow: active ? 'inset 0 0 0 1px var(--color-accent)' : 'inset 0 0 0 1px rgba(255,255,255,0.04)',
                     }}
                   >
-                    {n === 1 ? '1x' : `${n}x`}
+                    {n}x
                   </button>
                 )
               })}
@@ -397,19 +396,29 @@ export default function ExpenseForm({ open, onClose, cards, groupMembers, curren
           </div>
         )}
 
-        {/* Save */}
-        <button
-          type="button"
-          onClick={save}
-          disabled={amount <= 0 || saving}
-          className="w-full text-white font-semibold py-4 rounded-2xl disabled:opacity-50 transition-opacity"
-          style={{
-            background: 'var(--color-accent)',
-            boxShadow: '0 8px 24px rgba(124,109,245,0.35)',
-          }}
-        >
-          {saving ? 'Guardando…' : editingExpense ? 'Guardar cambios' : 'Guardar gasto'}
-        </button>
+        {/* Actions */}
+        <div className="flex gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => { onClose(); if (!editingExpense) resetForm() }}
+            className="flex-1 rounded-2xl py-3.5 text-sm font-medium transition-colors"
+            style={{ background: 'var(--color-surface-raised)', color: 'var(--color-muted)' }}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            onClick={save}
+            disabled={amount <= 0 || saving}
+            className="flex-[2] rounded-2xl py-3.5 text-sm font-semibold text-white disabled:opacity-50 transition-all active:scale-[0.98]"
+            style={{
+              background: 'var(--color-accent)',
+              boxShadow: '0 8px 24px rgba(124,109,245,0.35)',
+            }}
+          >
+            {saving ? 'Guardando…' : editingExpense ? 'Guardar cambios' : 'Guardar gasto'}
+          </button>
+        </div>
 
       </div>
     </BottomSheet>

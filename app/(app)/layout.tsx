@@ -10,7 +10,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div
       className="min-h-dvh"
-      style={{ paddingBottom: 'calc(var(--nav-height) + var(--sai-bottom) + 0.5rem)' }}
+      style={{ paddingBottom: 'calc(var(--nav-height) + var(--sai-bottom) + 5rem)' }}
     >
       {children}
       <BottomNav />
