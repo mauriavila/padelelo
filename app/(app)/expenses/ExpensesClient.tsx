@@ -26,31 +26,36 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
   }
 
   return (
-    <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">Gastos</h1>
+    <div className="max-w-[430px] mx-auto px-4 pt-6">
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-2xl font-bold">Gastos</h1>
         <MonthPicker value={month} onChange={handleMonthChange} />
       </div>
 
       {initialExpenses.length === 0 ? (
-        <p className="text-[var(--color-muted)] text-sm py-8 text-center">
-          Sin gastos en {month}
-        </p>
+        <div className="text-center py-16">
+          <p className="text-sm" style={{ color: 'var(--color-muted)' }}>Sin gastos en este mes</p>
+        </div>
       ) : (
-        <div>
-          {initialExpenses.map(e => (
-            <ExpenseRow
+        <div className="rounded-2xl overflow-hidden mb-6" style={{ background: 'var(--color-surface)' }}>
+          {initialExpenses.map((e, i) => (
+            <div
               key={e.id}
-              expense={e as Expense & { card: Card | null }}
-              onEdit={setEditingExpense}
-            />
+              style={{ borderTop: i > 0 ? `1px solid var(--color-border)` : 'none' }}
+            >
+              <ExpenseRow
+                expense={e as Expense & { card: Card | null }}
+                onEdit={setEditingExpense}
+              />
+            </div>
           ))}
         </div>
       )}
 
       <button
         onClick={() => setFormOpen(true)}
-        className="fixed bottom-24 right-4 w-14 h-14 bg-[var(--color-accent)] rounded-full flex items-center justify-center shadow-lg"
+        className="fixed bottom-[calc(var(--nav-height)+var(--sai-bottom)+1rem)] right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform active:scale-95"
+        style={{ background: 'var(--color-accent)' }}
       >
         <Plus size={24} />
       </button>

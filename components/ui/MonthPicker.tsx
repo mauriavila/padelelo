@@ -24,15 +24,26 @@ export default function MonthPicker({ value, onChange }: MonthPickerProps) {
   }
 
   return (
-    <div className="flex items-center gap-4">
-      <button onClick={prev} className="p-2 rounded-full hover:bg-[var(--color-surface-raised)]">
-        <ChevronLeft size={20} />
+    <div
+      className="flex items-center gap-1 rounded-2xl px-1"
+      style={{ background: 'var(--color-surface-raised)' }}
+    >
+      <button
+        onClick={prev}
+        className="p-2 rounded-xl transition-colors"
+        style={{ color: 'var(--color-muted)' }}
+      >
+        <ChevronLeft size={16} />
       </button>
-      <span className="font-semibold min-w-[120px] text-center">
+      <span className="text-sm font-semibold min-w-[84px] text-center">
         {MONTHS[month - 1]} {year}
       </span>
-      <button onClick={next} className="p-2 rounded-full hover:bg-[var(--color-surface-raised)]">
-        <ChevronRight size={20} />
+      <button
+        onClick={next}
+        className="p-2 rounded-xl transition-colors"
+        style={{ color: 'var(--color-muted)' }}
+      >
+        <ChevronRight size={16} />
       </button>
     </div>
   )

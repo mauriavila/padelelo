@@ -10,7 +10,8 @@ export default function CardsClient() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-24 right-4 w-14 h-14 bg-[var(--color-accent)] rounded-full flex items-center justify-center shadow-lg"
+        className="fixed bottom-[calc(var(--nav-height)+var(--sai-bottom)+1rem)] right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform active:scale-95"
+        style={{ background: 'var(--color-accent)' }}
       >
         <Plus size={24} />
       </button>

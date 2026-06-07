@@ -36,22 +36,31 @@ export default async function DashboardPage({
         totalIncome={totalIncome}
       />
       {installments.length > 0 && (
-        <div>
-          <h2 className="font-semibold mb-3 text-sm text-[var(--color-muted)]">
-            Cuotas de tarjeta ({installments.length})
-          </h2>
-          <div className="bg-[var(--color-surface)] rounded-2xl divide-y divide-[var(--color-border)]">
-            {installments.map(inst => (
-              <div key={inst.id} className="flex items-center gap-3 p-4">
-                <div className={`w-2 h-2 rounded-full ${inst.status === 'paid' ? 'bg-[var(--color-income)]' : 'bg-[var(--color-card)]'}`} />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{inst.expense.description ?? inst.expense.category}</p>
-                  <p className="text-xs text-[var(--color-muted)]">
+        <div className="mb-6">
+          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--color-muted)' }}>
+            Cuotas del mes ({installments.length})
+          </p>
+          <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-surface)' }}>
+            {installments.map((inst, i) => (
+              <div
+                key={inst.id}
+                className="flex items-center gap-3 px-4 py-3.5"
+                style={{
+                  borderTop: i > 0 ? `1px solid var(--color-border)` : 'none',
+                }}
+              >
+                <div
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ background: inst.status === 'paid' ? 'var(--color-income)' : 'var(--color-card)' }}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{inst.expense.description ?? inst.expense.category}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-muted)' }}>
                     Cuota {inst.installment_number}/{inst.expense.installments_count}
                   </p>
                 </div>
-                <span className="text-sm font-semibold text-[var(--color-card)]">
-                  -{formatARS(inst.amount)}
+                <span className="text-sm font-semibold flex-shrink-0" style={{ color: 'var(--color-card)' }}>
+                  −{formatARS(inst.amount)}
                 </span>
               </div>
             ))}

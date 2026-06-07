@@ -1,27 +1,40 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0a0a0f;
-  --color-surface: #13131a;
-  --color-surface-raised: #1c1c26;
-  --color-border: #2a2a38;
-  --color-text: #f0f0f5;
-  --color-muted: #888899;
+  --color-bg: #09090f;
+  --color-surface: #111118;
+  --color-surface-raised: #1a1a24;
+  --color-border: #252532;
+  --color-text: #f1f1f6;
+  --color-muted: #7a7a8e;
   --color-accent: #7c6df5;
-  --color-accent-light: #9b8ff7;
-  --color-income: #4ade80;
+  --color-accent-light: #a99cf8;
+  --color-accent-dim: rgba(124, 109, 245, 0.12);
+  --color-income: #34d399;
   --color-expense: #f87171;
-  --color-card: #f59e0b;
+  --color-card: #fbbf24;
   --font-family-sans: Inter, sans-serif;
 }
 
 * { box-sizing: border-box; padding: 0; margin: 0; }
 
-html { font-family: Inter, sans-serif; }
+html { font-family: Inter, sans-serif; -webkit-text-size-adjust: 100%; }
 
 body {
   background: var(--color-bg);
   color: var(--color-text);
   min-height: 100dvh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Safe-area helpers used in layout and nav */
+:root {
+  --sai-bottom: env(safe-area-inset-bottom, 0px);
+  --sai-top: env(safe-area-inset-top, 0px);
+  --nav-height: 3.75rem;
+}
+
+/* Hide scrollbars but keep scroll */
+* { scrollbar-width: none; }
+*::-webkit-scrollbar { display: none; }

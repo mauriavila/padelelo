@@ -1,5 +1,6 @@
 'use client'
 import { useEffect } from 'react'
+import { X } from 'lucide-react'
 
 interface BottomSheetProps {
   open: boolean
@@ -20,23 +21,40 @@ export default function BottomSheet({ open, onClose, title, children }: BottomSh
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end">
       <div
-        className="absolute inset-0 bg-black/60"
+        className="absolute inset-0"
+        style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
         onClick={onClose}
       />
-      <div className="relative bg-[var(--color-surface)] rounded-t-3xl max-h-[90dvh] overflow-y-auto">
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full bg-[var(--color-border)]" />
+      <div
+        className="relative flex flex-col max-h-[92dvh]"
+        style={{
+          background: 'var(--color-surface)',
+          borderRadius: '24px 24px 0 0',
+        }}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
+          <div className="w-9 h-1 rounded-full" style={{ background: 'var(--color-border)' }} />
         </div>
-        <div className="flex items-center justify-between px-4 py-3">
-          <h2 className="text-lg font-semibold">{title}</h2>
+        {/* Header */}
+        <div
+          className="flex items-center justify-between px-5 py-3 flex-shrink-0"
+          style={{ borderBottom: '1px solid var(--color-border)' }}
+        >
+          <h2 className="text-base font-semibold">{title}</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--color-surface-raised)] text-[var(--color-muted)]"
+            className="w-8 h-8 flex items-center justify-center rounded-full transition-colors"
+            style={{ background: 'var(--color-surface-raised)', color: 'var(--color-muted)' }}
           >
-            ✕
+            <X size={16} />
           </button>
         </div>
-        <div className="px-4 pb-8">
+        {/* Scrollable content with safe-area bottom padding */}
+        <div
+          className="overflow-y-auto px-5 py-4"
+          style={{ paddingBottom: 'calc(1.5rem + var(--sai-bottom))' }}
+        >
           {children}
         </div>
       </div>

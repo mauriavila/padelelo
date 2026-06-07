@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Users, Plus, UserPlus } from 'lucide-react'
+import { Users, Plus, UserPlus, X, ChevronRight } from 'lucide-react'
 
 interface Group {
   id: number
@@ -19,23 +19,18 @@ interface Props {
 
 export default function GroupsClient({ groups: initialGroups, currentUserId }: Props) {
   const router = useRouter()
-  const [groups, setGroups] = useState(initialGroups)
+  const [groups] = useState(initialGroups)
 
-  // Create group state
   const [showCreate, setShowCreate] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
   const [creating, setCreating] = useState(false)
   const [createError, setCreateError] = useState('')
 
-  // Add member state (keyed by group id)
   const [addingMemberFor, setAddingMemberFor] = useState<number | null>(null)
   const [memberEmail, setMemberEmail] = useState('')
   const [addingMember, setAddingMember] = useState(false)
   const [addMemberError, setAddMemberError] = useState('')
   const [addMemberSuccess, setAddMemberSuccess] = useState('')
-
-  // Suppress unused variable warning — groups state is set on refresh
-  void groups
 
   async function handleCreateGroup(e: React.FormEvent) {
     e.preventDefault()
@@ -73,7 +68,7 @@ export default function GroupsClient({ groups: initialGroups, currentUserId }: P
     if (!res.ok) {
       setAddMemberError(data.error ?? 'Error al agregar miembro')
     } else {
-      setAddMemberSuccess(`${data.email} agregado correctamente`)
+      setAddMemberSuccess(`${data.email} agregado`)
       setMemberEmail('')
       setTimeout(() => {
         setAddingMemberFor(null)
@@ -85,12 +80,13 @@ export default function GroupsClient({ groups: initialGroups, currentUserId }: P
   }
 
   return (
-    <div className="p-4 pb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">Grupos</h1>
+    <div className="max-w-[430px] mx-auto px-4 pt-6">
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-2xl font-bold">Grupos</h1>
         <button
           onClick={() => { setShowCreate(v => !v); setCreateError('') }}
-          className="flex items-center gap-1.5 bg-[var(--color-accent)] text-white text-sm font-medium px-3 py-2 rounded-xl"
+          className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-2xl transition-all active:scale-95"
+          style={{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }}
         >
           <Plus size={16} />
           Nuevo
@@ -99,44 +95,75 @@ export default function GroupsClient({ groups: initialGroups, currentUserId }: P
 
       {/* Create group form */}
       {showCreate && (
-        <form onSubmit={handleCreateGroup} className="bg-[var(--color-surface)] rounded-2xl p-4 mb-4 flex flex-col gap-3">
-          <p className="text-sm font-medium">Nombre del grupo</p>
+        <form
+          onSubmit={handleCreateGroup}
+          className="rounded-2xl p-4 mb-4 flex flex-col gap-3"
+          style={{ background: 'var(--color-surface)' }}
+        >
+          <p className="text-sm font-semibold">Nombre del grupo</p>
           <input
             autoFocus
             value={newGroupName}
             onChange={e => setNewGroupName(e.target.value)}
             placeholder="Ej: Mauri y Caro"
-            className="bg-[var(--color-surface-raised)] rounded-xl px-4 py-3 text-sm outline-none border border-[var(--color-border)] focus:border-[var(--color-accent)]"
+            className="rounded-xl px-4 py-3 text-sm outline-none transition-colors"
+            style={{
+              background: 'var(--color-surface-raised)',
+              border: '1px solid var(--color-border)',
+              color: 'var(--color-text)',
+            }}
           />
-          {createError && <p className="text-xs text-[var(--color-expense)]">{createError}</p>}
+          {createError && (
+            <p className="text-xs" style={{ color: 'var(--color-expense)' }}>{createError}</p>
+          )}
           <div className="flex gap-2">
-            <button type="submit" disabled={creating || !newGroupName.trim()}
-              className="flex-1 bg-[var(--color-accent)] text-white text-sm font-medium py-2.5 rounded-xl disabled:opacity-50">
-              {creating ? 'Creando...' : 'Crear grupo'}
+            <button
+              type="submit"
+              disabled={creating || !newGroupName.trim()}
+              className="flex-1 text-sm font-semibold py-3 rounded-xl transition-all active:scale-95 disabled:opacity-40"
+              style={{ background: 'var(--color-accent)', color: '#fff' }}
+            >
+              {creating ? 'Creando…' : 'Crear grupo'}
             </button>
-            <button type="button" onClick={() => setShowCreate(false)}
-              className="px-4 text-sm text-[var(--color-muted)] bg-[var(--color-surface-raised)] rounded-xl">
-              Cancelar
+            <button
+              type="button"
+              onClick={() => setShowCreate(false)}
+              className="px-4 rounded-xl"
+              style={{ background: 'var(--color-surface-raised)', color: 'var(--color-muted)' }}
+            >
+              <X size={18} />
             </button>
           </div>
         </form>
       )}
 
       {/* Groups list */}
-      {initialGroups.length === 0 && !showCreate ? (
-        <div className="text-center py-12">
-          <Users size={40} className="mx-auto mb-3 text-[var(--color-muted)]" />
-          <p className="text-[var(--color-muted)] text-sm">No tenés grupos todavía</p>
-          <p className="text-[var(--color-muted)] text-xs mt-1">Creá uno para compartir gastos</p>
+      {groups.length === 0 && !showCreate ? (
+        <div className="text-center py-16">
+          <div
+            className="w-14 h-14 rounded-3xl flex items-center justify-center mx-auto mb-3"
+            style={{ background: 'var(--color-surface)' }}
+          >
+            <Users size={24} style={{ color: 'var(--color-muted)' }} />
+          </div>
+          <p className="text-sm" style={{ color: 'var(--color-muted)' }}>No tenés grupos todavía</p>
+          <p className="text-xs mt-1" style={{ color: 'var(--color-muted)' }}>Creá uno para compartir gastos</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          {initialGroups.map(group => (
-            <div key={group.id} className="bg-[var(--color-surface)] rounded-2xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h2 className="font-semibold">{group.name}</h2>
-                  <p className="text-xs text-[var(--color-muted)]">
+        <div className="flex flex-col gap-2">
+          {groups.map(group => (
+            <div key={group.id} className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-surface)' }}>
+              {/* Group header */}
+              <div className="flex items-center gap-3 px-4 py-4">
+                <div
+                  className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'var(--color-accent-dim)' }}
+                >
+                  <Users size={18} style={{ color: 'var(--color-accent)' }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold truncate">{group.name}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-muted)' }}>
                     {group.members.length} {group.members.length === 1 ? 'miembro' : 'miembros'}
                     {group.role === 'owner' && ' · tuyo'}
                   </p>
@@ -149,7 +176,8 @@ export default function GroupsClient({ groups: initialGroups, currentUserId }: P
                       setAddMemberError('')
                       setAddMemberSuccess('')
                     }}
-                    className="flex items-center gap-1 text-xs text-[var(--color-accent)] bg-[var(--color-surface-raised)] px-3 py-1.5 rounded-xl"
+                    className="flex items-center gap-1 text-xs font-semibold px-3 py-2 rounded-xl transition-colors"
+                    style={{ background: 'var(--color-surface-raised)', color: 'var(--color-accent)' }}
                   >
                     <UserPlus size={13} />
                     Agregar
@@ -159,40 +187,82 @@ export default function GroupsClient({ groups: initialGroups, currentUserId }: P
 
               {/* Add member form */}
               {addingMemberFor === group.id && (
-                <form onSubmit={e => handleAddMember(e, group.id)} className="mb-3 flex flex-col gap-2">
-                  <input
-                    autoFocus
-                    type="email"
-                    value={memberEmail}
-                    onChange={e => setMemberEmail(e.target.value)}
-                    placeholder="Email de Google de la persona"
-                    className="bg-[var(--color-surface-raised)] rounded-xl px-4 py-3 text-sm outline-none border border-[var(--color-border)] focus:border-[var(--color-accent)]"
-                  />
-                  {addMemberError && <p className="text-xs text-[var(--color-expense)]">{addMemberError}</p>}
-                  {addMemberSuccess && <p className="text-xs text-[var(--color-income)]">{addMemberSuccess}</p>}
-                  <div className="flex gap-2">
-                    <button type="submit" disabled={addingMember || !memberEmail.trim()}
-                      className="flex-1 bg-[var(--color-accent)] text-white text-sm font-medium py-2.5 rounded-xl disabled:opacity-50">
-                      {addingMember ? 'Buscando...' : 'Agregar miembro'}
-                    </button>
-                    <button type="button" onClick={() => setAddingMemberFor(null)}
-                      className="px-4 text-sm text-[var(--color-muted)] bg-[var(--color-surface-raised)] rounded-xl">
-                      Cancelar
-                    </button>
-                  </div>
-                </form>
+                <div style={{ borderTop: '1px solid var(--color-border)' }}>
+                  <form
+                    onSubmit={e => handleAddMember(e, group.id)}
+                    className="px-4 py-3 flex flex-col gap-2"
+                  >
+                    <input
+                      autoFocus
+                      type="email"
+                      value={memberEmail}
+                      onChange={e => setMemberEmail(e.target.value)}
+                      placeholder="Email de Google"
+                      className="rounded-xl px-3 py-2.5 text-sm outline-none"
+                      style={{
+                        background: 'var(--color-surface-raised)',
+                        border: '1px solid var(--color-border)',
+                        color: 'var(--color-text)',
+                      }}
+                    />
+                    {addMemberError && (
+                      <p className="text-xs" style={{ color: 'var(--color-expense)' }}>{addMemberError}</p>
+                    )}
+                    {addMemberSuccess && (
+                      <p className="text-xs" style={{ color: 'var(--color-income)' }}>{addMemberSuccess}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={addingMember || !memberEmail.trim()}
+                        className="flex-1 text-sm font-semibold py-2.5 rounded-xl disabled:opacity-40 transition-all"
+                        style={{ background: 'var(--color-accent)', color: '#fff' }}
+                      >
+                        {addingMember ? 'Buscando…' : 'Agregar'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAddingMemberFor(null)}
+                        className="px-3 rounded-xl"
+                        style={{ background: 'var(--color-surface-raised)', color: 'var(--color-muted)' }}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </form>
+                </div>
               )}
 
               {/* Members list */}
-              <div className="flex flex-col gap-1">
-                {group.members.map(m => (
-                  <div key={m.user_id} className="flex items-center gap-2 text-xs text-[var(--color-muted)]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-border)]" />
-                    <span>{m.user_id === currentUserId ? 'Vos' : m.user_id.slice(0, 8) + '...'}</span>
-                    {m.role === 'owner' && <span className="text-[var(--color-accent)]">owner</span>}
-                  </div>
-                ))}
-              </div>
+              {group.members.length > 0 && (
+                <div style={{ borderTop: '1px solid var(--color-border)' }}>
+                  {group.members.map((m, i) => (
+                    <div
+                      key={m.user_id}
+                      className="flex items-center gap-2 px-4 py-2.5"
+                      style={{ borderTop: i > 0 ? '1px solid var(--color-border)' : 'none' }}
+                    >
+                      <div
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
+                        style={{
+                          background: m.role === 'owner' ? 'var(--color-accent-dim)' : 'var(--color-surface-raised)',
+                          color: m.role === 'owner' ? 'var(--color-accent)' : 'var(--color-muted)',
+                        }}
+                      >
+                        {m.user_id === currentUserId ? 'V' : m.user_id.slice(0, 1).toUpperCase()}
+                      </div>
+                      <span className="text-xs flex-1" style={{ color: 'var(--color-muted)' }}>
+                        {m.user_id === currentUserId ? 'Vos' : m.user_id.slice(0, 8) + '…'}
+                      </span>
+                      {m.role === 'owner' && (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--color-accent-dim)', color: 'var(--color-accent)' }}>
+                          Owner
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

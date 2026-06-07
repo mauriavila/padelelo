@@ -8,7 +8,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!user) redirect('/auth')
 
   return (
-    <div className="min-h-dvh pb-20">
+    <div
+      className="min-h-dvh"
+      style={{ paddingBottom: 'calc(var(--nav-height) + var(--sai-bottom) + 0.5rem)' }}
+    >
       {children}
       <BottomNav />
     </div>
