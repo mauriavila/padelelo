@@ -12,7 +12,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Verify requesting user is owner of this group
-  const admin = createAdminClient()
+  let admin: ReturnType<typeof createAdminClient>
+  try {
+    admin = createAdminClient()
+  } catch {
+    return Response.json({ error: 'Servicio no disponible' }, { status: 503 })
+  }
   const { data: membership } = await admin
     .from('group_members')
     .select('role')

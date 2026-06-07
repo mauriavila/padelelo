@@ -9,7 +9,12 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const admin = createAdminClient()
+  let admin: ReturnType<typeof createAdminClient>
+  try {
+    admin = createAdminClient()
+  } catch {
+    return Response.json({ error: 'Servicio no disponible' }, { status: 503 })
+  }
 
   // Create group
   const { data: group, error: groupError } = await admin
