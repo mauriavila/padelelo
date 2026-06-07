@@ -22,7 +22,7 @@ export default async function IncomePage({
   const total = incomeList.reduce((sum, i) => sum + i.amount, 0)
 
   return (
-    <div className="max-w-[430px] mx-auto">
+    <div className="max-w-[480px] mx-auto">
       <IncomePageClient month={month}>
         {/* Summary card */}
         <section className="px-6 pb-4">

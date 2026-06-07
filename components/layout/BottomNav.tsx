@@ -16,39 +16,48 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-40"
-      style={{ paddingBottom: 'var(--sai-bottom)' }}
+      className="fixed bottom-0 inset-x-0 z-40 border-t border-white/[0.05]"
+      style={{
+        paddingBottom: 'var(--sai-bottom)',
+        background: 'rgba(17, 17, 24, 0.9)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+      }}
     >
-      <div
-        className="border-t border-[var(--color-border)]"
-        style={{ background: 'rgba(17, 17, 24, 0.95)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
-      >
-        <div className="flex max-w-[430px] mx-auto" style={{ height: 'var(--nav-height)' }}>
-          {tabs.map(({ href, icon: Icon, label }) => {
-            const active = pathname === href || pathname.startsWith(href + '/')
-            return (
+      <ul className="grid grid-cols-5 mx-auto px-2 pt-2 pb-2" style={{ maxWidth: '480px', height: 'var(--nav-height)' }}>
+        {tabs.map(({ href, icon: Icon, label }) => {
+          const active = pathname === href || pathname.startsWith(href + '/')
+          return (
+            <li key={href} className="flex justify-center">
               <Link
-                key={href}
                 href={href}
-                className="flex-1 flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-1.5 transition-colors"
-                style={active ? { background: 'var(--color-accent-dim)' } : {}}
+                className="relative flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 transition-colors"
               >
+                {active && (
+                  <span
+                    className="absolute inset-x-2 top-0 h-[2px] rounded-full"
+                    style={{
+                      background: 'var(--color-accent)',
+                      boxShadow: '0 0 12px rgba(124,109,245,0.6)',
+                    }}
+                  />
+                )}
                 <Icon
                   size={20}
                   strokeWidth={active ? 2.25 : 1.75}
                   color={active ? 'var(--color-accent)' : 'var(--color-muted)'}
                 />
                 <span
-                  className="text-[10px] uppercase tracking-wider transition-colors"
-                  style={{ color: active ? 'var(--color-accent-light)' : 'var(--color-muted)' }}
+                  className="text-[10px] font-mono uppercase tracking-wider transition-colors"
+                  style={{ color: active ? 'var(--color-text)' : 'var(--color-muted)' }}
                 >
                   {label}
                 </span>
               </Link>
-            )
-          })}
-        </div>
-      </div>
+            </li>
+          )
+        })}
+      </ul>
     </nav>
   )
 }

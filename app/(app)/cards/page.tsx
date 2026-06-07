@@ -8,7 +8,7 @@ export default async function CardsPage() {
   const cards = await getCards()
 
   return (
-    <div className="max-w-[430px] mx-auto">
+    <div className="max-w-[480px] mx-auto">
       <PageHeader eyebrow="Tus" title="Tarjetas" />
       <div className="px-6 pb-4">
         {cards.length === 0 ? (

@@ -26,7 +26,7 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
   }
 
   return (
-    <div className="max-w-[430px] mx-auto">
+    <div className="max-w-[480px] mx-auto">
       <div className="flex items-end justify-between px-6 pt-8 pb-4">
         <div className="space-y-1">
           <p className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-muted)' }}>

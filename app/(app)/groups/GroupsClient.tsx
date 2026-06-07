@@ -80,7 +80,7 @@ export default function GroupsClient({ groups: initialGroups, currentUserId }: P
   }
 
   return (
-    <div className="max-w-[430px] mx-auto px-6 pt-6">
+    <div className="max-w-[480px] mx-auto px-6 pt-6">
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-2xl font-display font-bold tracking-tight">Grupos</h1>
         <button
