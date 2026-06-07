@@ -1,4 +1,5 @@
 import { getExpensesForMonth, getInstallmentsForMonth, getIncomeForMonth } from '@/lib/supabase/queries'
+import { createClient } from '@/lib/supabase/server'
 import { formatARS } from '@/lib/currency'
 import MonthSummary from '@/components/dashboard/MonthSummary'
 import DashboardClient from './DashboardClient'
@@ -18,6 +19,13 @@ export default async function DashboardPage({
   const params = await searchParams
   const month = params.month ?? getCurrentYearMonth()
 
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const email = user?.email ?? ''
+  const userInitials = email
+    ? email.split('@')[0].slice(0, 2).toUpperCase()
+    : 'MA'
+
   const [expenses, installments, income] = await Promise.all([
     getExpensesForMonth(month),
     getInstallmentsForMonth(month),
@@ -29,7 +37,7 @@ export default async function DashboardPage({
   const totalIncome = income.reduce((sum, i) => sum + i.amount, 0)
 
   return (
-    <DashboardClient month={month}>
+    <DashboardClient month={month} userInitials={userInitials}>
       <MonthSummary
         totalExpenses={totalExpenses}
         totalInstallments={totalInstallments}
@@ -74,8 +82,11 @@ export default async function DashboardPage({
                   />
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate">{inst.expense.description ?? inst.expense.category}</p>
-                    <p className="text-[11px] font-mono mt-0.5" style={{ color: 'var(--color-muted)' }}>
+                    <p className="text-[11px] font-mono mt-0.5 truncate" style={{ color: 'var(--color-muted)' }}>
                       Cuota {String(inst.installment_number).padStart(2,'0')}/{String(inst.expense.installments_count).padStart(2,'0')}
+                      {(inst.expense as typeof inst.expense & { card?: { name: string } | null }).card?.name
+                        ? ` · ${(inst.expense as typeof inst.expense & { card?: { name: string } | null }).card!.name}`
+                        : ''}
                     </p>
                   </div>
                 </div>

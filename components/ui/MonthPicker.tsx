@@ -6,7 +6,7 @@ interface MonthPickerProps {
   onChange: (value: string) => void
 }
 
-const MONTHS = ['ene.','feb.','mar.','abr.','may.','jun.','jul.','ago.','sep.','oct.','nov.','dic.']
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
 export default function MonthPicker({ value, onChange }: MonthPickerProps) {
   const [year, month] = value.split('-').map(Number)
@@ -35,7 +35,7 @@ export default function MonthPicker({ value, onChange }: MonthPickerProps) {
       >
         <ChevronLeft size={16} />
       </button>
-      <span className="text-sm font-medium min-w-[84px] text-center">
+      <span className="text-sm font-medium min-w-[120px] text-center">
         {MONTHS[month - 1]} {year}
       </span>
       <button
