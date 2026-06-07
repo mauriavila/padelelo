@@ -13,7 +13,9 @@
   --color-income: #34d399;
   --color-expense: #f87171;
   --color-card: #fbbf24;
-  --font-family-sans: Inter, sans-serif;
+  --font-family-sans: "Inter", sans-serif;
+  --font-family-display: "Inter Tight", sans-serif;
+  --font-family-mono: "JetBrains Mono", monospace;
 }
 
 * { box-sizing: border-box; padding: 0; margin: 0; }
@@ -38,3 +40,25 @@ body {
 /* Hide scrollbars but keep scroll */
 * { scrollbar-width: none; }
 *::-webkit-scrollbar { display: none; }
+
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-up { animation: slideUp 0.5s var(--ease-out-expo) both; }
+.animate-sheet-up { animation: sheetUp 0.35s var(--ease-out-expo) both; }
+.animate-fade-in { animation: fadeIn 0.25s ease-out both; }
+.font-display { font-family: "Inter Tight", sans-serif; }

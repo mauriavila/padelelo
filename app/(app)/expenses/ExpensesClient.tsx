@@ -26,9 +26,14 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
   }
 
   return (
-    <div className="max-w-[430px] mx-auto px-4 pt-6">
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-2xl font-bold">Gastos</h1>
+    <div className="max-w-[430px] mx-auto">
+      <div className="flex items-end justify-between px-4 pt-8 pb-4">
+        <div className="space-y-1">
+          <p className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-muted)' }}>
+            Lista de
+          </p>
+          <h1 className="text-2xl font-display font-bold tracking-tight">Gastos</h1>
+        </div>
         <MonthPicker value={month} onChange={handleMonthChange} />
       </div>
 
@@ -37,27 +42,32 @@ export default function ExpensesClient({ initialExpenses, initialMonth, cards, c
           <p className="text-sm" style={{ color: 'var(--color-muted)' }}>Sin gastos en este mes</p>
         </div>
       ) : (
-        <div className="rounded-2xl overflow-hidden mb-6" style={{ background: 'var(--color-surface)' }}>
-          {initialExpenses.map((e, i) => (
-            <div
-              key={e.id}
-              style={{ borderTop: i > 0 ? `1px solid var(--color-border)` : 'none' }}
-            >
-              <ExpenseRow
-                expense={e as Expense & { card: Card | null }}
-                onEdit={setEditingExpense}
-              />
-            </div>
-          ))}
+        <div className="px-4">
+          <div className="overflow-hidden rounded-3xl mb-6 ring-1 ring-white/[0.05]" style={{ background: 'var(--color-surface)' }}>
+            {initialExpenses.map((e, i) => (
+              <div
+                key={e.id}
+                style={{ borderTop: i > 0 ? `1px solid var(--color-border)` : 'none' }}
+              >
+                <ExpenseRow
+                  expense={e as Expense & { card: Card | null }}
+                  onEdit={setEditingExpense}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       <button
         onClick={() => setFormOpen(true)}
-        className="fixed bottom-[calc(var(--nav-height)+var(--sai-bottom)+1rem)] right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform active:scale-95"
-        style={{ background: 'var(--color-accent)' }}
+        className="fixed right-4 z-30 w-14 h-14 flex items-center justify-center rounded-2xl shadow-[0_10px_32px_rgba(124,109,245,0.45)] ring-4 ring-background transition-transform active:scale-90"
+        style={{
+          bottom: 'calc(var(--nav-height) + var(--sai-bottom) + 1rem)',
+          background: 'var(--color-accent)',
+        }}
       >
-        <Plus size={24} />
+        <Plus size={24} strokeWidth={2.5} />
       </button>
 
       <ExpenseForm

@@ -1,11 +1,11 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, List, CreditCard, Users, TrendingUp } from 'lucide-react'
+import { LayoutGrid, Receipt, CreditCard, Users, TrendingUp } from 'lucide-react'
 
 const tabs = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Inicio' },
-  { href: '/expenses', icon: List, label: 'Gastos' },
+  { href: '/dashboard', icon: LayoutGrid, label: 'Resumen' },
+  { href: '/expenses', icon: Receipt, label: 'Gastos' },
   { href: '/cards', icon: CreditCard, label: 'Tarjetas' },
   { href: '/groups', icon: Users, label: 'Grupos' },
   { href: '/income', icon: TrendingUp, label: 'Ingresos' },
@@ -30,21 +30,17 @@ export default function BottomNav() {
               <Link
                 key={href}
                 href={href}
-                className="flex-1 flex flex-col items-center justify-center gap-0.5"
+                className="flex-1 flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-1.5 transition-colors"
+                style={active ? { background: 'var(--color-accent-dim)' } : {}}
               >
-                <div
-                  className="flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200"
-                  style={active ? { background: 'var(--color-accent-dim)' } : {}}
-                >
-                  <Icon
-                    size={19}
-                    strokeWidth={active ? 2.5 : 1.8}
-                    color={active ? 'var(--color-accent)' : 'var(--color-muted)'}
-                  />
-                </div>
+                <Icon
+                  size={20}
+                  strokeWidth={active ? 2.25 : 1.75}
+                  color={active ? 'var(--color-accent)' : 'var(--color-muted)'}
+                />
                 <span
-                  className="text-[10px] font-medium tracking-wide transition-colors duration-200"
-                  style={{ color: active ? 'var(--color-accent)' : 'var(--color-muted)' }}
+                  className="text-[10px] uppercase tracking-wider transition-colors"
+                  style={{ color: active ? 'var(--color-accent-light)' : 'var(--color-muted)' }}
                 >
                   {label}
                 </span>

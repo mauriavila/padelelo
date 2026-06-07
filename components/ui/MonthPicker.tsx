@@ -6,7 +6,7 @@ interface MonthPickerProps {
   onChange: (value: string) => void
 }
 
-const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+const MONTHS = ['ene.','feb.','mar.','abr.','may.','jun.','jul.','ago.','sep.','oct.','nov.','dic.']
 
 export default function MonthPicker({ value, onChange }: MonthPickerProps) {
   const [year, month] = value.split('-').map(Number)
@@ -25,22 +25,22 @@ export default function MonthPicker({ value, onChange }: MonthPickerProps) {
 
   return (
     <div
-      className="flex items-center gap-1 rounded-2xl px-1"
+      className="flex items-center gap-1 rounded-full p-1"
       style={{ background: 'var(--color-surface-raised)' }}
     >
       <button
         onClick={prev}
-        className="p-2 rounded-xl transition-colors"
+        className="w-7 h-7 flex items-center justify-center rounded-full transition-colors hover:bg-white/5"
         style={{ color: 'var(--color-muted)' }}
       >
         <ChevronLeft size={16} />
       </button>
-      <span className="text-sm font-semibold min-w-[84px] text-center">
+      <span className="text-sm font-medium min-w-[84px] text-center">
         {MONTHS[month - 1]} {year}
       </span>
       <button
         onClick={next}
-        className="p-2 rounded-xl transition-colors"
+        className="w-7 h-7 flex items-center justify-center rounded-full transition-colors hover:bg-white/5"
         style={{ color: 'var(--color-muted)' }}
       >
         <ChevronRight size={16} />
