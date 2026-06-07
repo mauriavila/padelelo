@@ -13,9 +13,9 @@
   --color-income: #34d399;
   --color-expense: #f87171;
   --color-card: #fbbf24;
-  --font-family-sans: "Inter", sans-serif;
-  --font-family-display: "Inter Tight", sans-serif;
-  --font-family-mono: "JetBrains Mono", monospace;
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Inter Tight", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 * { box-sizing: border-box; padding: 0; margin: 0; }

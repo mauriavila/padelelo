@@ -16,15 +16,15 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-40 border-t border-white/[0.05]"
+      className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[480px] border-t border-white/[0.05]"
       style={{
         paddingBottom: 'var(--sai-bottom)',
-        background: 'rgba(17, 17, 24, 0.9)',
+        background: 'rgba(9, 9, 15, 0.85)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
       }}
     >
-      <ul className="grid grid-cols-5 mx-auto px-2 pt-2 pb-2" style={{ maxWidth: '480px', height: 'var(--nav-height)' }}>
+      <ul className="grid grid-cols-5 px-2 pt-2 pb-2">
         {tabs.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || pathname.startsWith(href + '/')
           return (
